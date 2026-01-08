@@ -1,30 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.deployment.name | default "mult-app" }}
-  namespace: {{ .Values.namespace | default "default" }}
+  name: {{ .Values.deployment.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.deployment.name }}
+    # Labels no nível do Deployment ajudam na organização, mas não são o que o dashboard vê
+    billing/sku: {{ .Values.billing.sku | default "nano" }}
 spec:
-  replicas: {{ .Values.deployment.replicas | default 1 }}
+  replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.deployment.name | default "mult-app" }}
+      app: {{ .Values.deployment.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.deployment.name | default "mult-app" }}
+        # --- AQUI É A PARTE CRÍTICA PARA O DASHBOARD ---
+        app: {{ .Values.deployment.name }}
+        # O Dashboard filtra por esta label. Se ela faltar, o app não aparece na lista.
+        billing/sku: {{ .Values.billing.sku | default "nano" }}
+        # Identifica o tipo de recurso para o seu front-end
+        billing/resource-type: "GitOps-App"
+        # Identifica o cliente (pode ser parametrizado no futuro)
+        billing/customer: "alpha"
     spec:
       containers:
-      - name: {{ .Values.deployment.name | default "mult-app" }}
-        image: "{{ .Values.deployment.image.repository | default "mult-app" }}:{{ .Values.deployment.image.tag | default "latest" }}"
-        imagePullPolicy: {{ .Values.deployment.image.pullPolicy | default "Never" }}
-        ports:
-          - containerPort: {{ .Values.service.targetPort | default 8080 }}
-            name: http
-        resources:
-          requests:
-            memory: {{ .Values.resources.requests.memory | default "64Mi" | quote }}
-            cpu: {{ .Values.resources.requests.cpu | default "250m" | quote }}
-          limits:
-            memory: {{ .Values.resources.limits.memory | default "128Mi" | quote }}
-            cpu: {{ .Values.resources.limits.cpu | default "500m" | quote }}
-
+        - name: {{ .Values.deployment.name }}
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          
+          # Carrega variáveis de ambiente (Útil para saber que está em 'development')
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.deployment.name }}-config
+          
+          # Define os recursos baseados no que o Dashboard injetou (SKU)
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu | quote }}
+              memory: {{ .Values.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu | quote }}
+              memory: {{ .Values.resources.limits.memory | quote }}
