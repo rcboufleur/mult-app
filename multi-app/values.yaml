@@ -1,31 +1,7 @@
-namespace: "cliente-alpha" 
-
-deployment:
-  name: mult-app
-  replicas: 1
-  image:
-    repository: mult-app
-    tag: latest
-    pullPolicy: Never
-
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 8080
-
-configmap:
-  enabled: false
-
-resources:
-  limits:
-    cpu: "500m"
-    memory: "128Mi"
-  requests:
-    cpu: "250m"
-    memory: "64Mi"
+namespace: true
 
 resourceQuota:
-  enabled: false 
+  enabled: true
   limits:
     requests.cpu: "2"
     requests.memory: 512Mi
@@ -33,4 +9,10 @@ resourceQuota:
     limits.memory: 512Mi
 
 limitRange:
-  enabled: false
+  enabled: true
+  default:
+    cpu: 500m
+    memory: 128Mi
+  defaultRequest:
+    cpu: 250m
+    memory: 64Mi
