@@ -4,7 +4,7 @@ namespace:
 
 deployment:
   name: mult-app
-  replicas: 3
+  replicas: 1
   image:
     repository: mult-app
     tag: latest
