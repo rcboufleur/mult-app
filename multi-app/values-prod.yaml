@@ -1,6 +1,4 @@
-namespace:
-  name: nano-prod
-  create: true
+namespace: "nano-prod"
 
 deployment:
   name: mult-app

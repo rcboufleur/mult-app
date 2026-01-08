@@ -1,4 +1,32 @@
-namespace: true
+namespace: "cliente-alpha" # Valor padrão
+
+deployment:
+  name: "mult-app"
+  replicas: 1
+  image:
+    repository: "mult-app"
+    tag: "latest"
+    pullPolicy: "Never"
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+configmap:
+  enabled: true
+  data:
+    ENVIRONMENT: development
+    LOG_LEVEL: debug
+
+# Mantenha os recursos aqui para o dashboard sobrescrever
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    cpu: "500m"
+    memory: "128Mi"
 
 resourceQuota:
   enabled: true

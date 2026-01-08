@@ -1,6 +1,4 @@
-namespace:
-  name: nano-dev
-  create: true
+namespace: "nano-dev"
 
 deployment:
   name: mult-app

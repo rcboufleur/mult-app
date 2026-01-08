@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Release.Namespace }} # Usa o namespace que o ArgoCD definiu
+  name: {{ .Values.namespace | default "default" }}
 {{- end }}
 ---
 {{- if .Values.resourceQuota.enabled }}

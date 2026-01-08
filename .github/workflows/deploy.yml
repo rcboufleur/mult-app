@@ -1,4 +1,4 @@
-name: Deploy to Kubernetes
+name: Build Docker Image
 
 on:
   push:
@@ -53,68 +53,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-  deploy-dev:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
-    environment:
-      name: development
-      url: https://dev.example.com
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: 'latest'
-
-      - name: Configure Kubernetes
-        run: |
-          # Configure kubectl with your cluster credentials
-          # echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
-          # export KUBECONFIG=kubeconfig
-          echo "Configure your Kubernetes cluster access here"
-
-      - name: Deploy to Development
-        run: |
-          helm upgrade --install mult-app ./multi-app \
-            --namespace nano-dev \
-            --create-namespace \
-            --values ./multi-app/values-dev.yaml \
-            --set deployment.image.tag=${{ github.sha }}
-
-  deploy-prod:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    environment:
-      name: production
-      url: https://prod.example.com
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: 'latest'
-
-      - name: Configure Kubernetes
-        run: |
-          # Configure kubectl with your cluster credentials
-          # echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
-          # export KUBECONFIG=kubeconfig
-          echo "Configure your Kubernetes cluster access here"
-
-      - name: Deploy to Production
-        run: |
-          helm upgrade --install mult-app ./multi-app \
-            --namespace nano-prod \
-            --create-namespace \
-            --values ./multi-app/values-prod.yaml \
-            --set deployment.image.tag=${{ github.sha }}
 
