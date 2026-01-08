@@ -44,3 +44,6 @@ limitRange:
   defaultRequest:
     cpu: 250m
     memory: 64Mi
+
+billing:
+  sku: "nano"
