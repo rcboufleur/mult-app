@@ -1,8 +1,8 @@
-{{- if .Values.namespace.create }}
+{{- if .Values.namespace }}
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Values.namespace.name }}
+  name: {{ .Release.Namespace }} # Usa o namespace que o ArgoCD definiu
 {{- end }}
 ---
 {{- if .Values.resourceQuota.enabled }}
@@ -35,4 +35,3 @@ spec:
       memory: {{ .Values.limitRange.defaultRequest.memory }}
     type: Container
 {{- end }}
-
