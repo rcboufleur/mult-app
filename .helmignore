@@ -1,0 +1,6 @@
+*.py
+deployment.yaml
+nano-ns.yaml
+Dockerfile
+.git
+.gitignore

@@ -1,0 +1,45 @@
+namespace:
+  name: nano
+  create: true
+
+deployment:
+  name: mult-app
+  replicas: 1
+  image:
+    repository: mult-app
+    tag: latest
+    pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+configmap:
+  enabled: false
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
+
+resourceQuota:
+  enabled: true
+  limits:
+    requests.cpu: "2"
+    requests.memory: 512Mi
+    limits.cpu: "2"
+    limits.memory: 512Mi
+
+limitRange:
+  enabled: true
+  default:
+    cpu: 500m
+    memory: 128Mi
+  defaultRequest:
+    cpu: 250m
+    memory: 64Mi
+

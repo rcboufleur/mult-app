@@ -1,0 +1,38 @@
+{{- if .Values.namespace.create }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace.name }}
+{{- end }}
+---
+{{- if .Values.resourceQuota.enabled }}
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: {{ .Values.namespace.name }}
+spec:
+  hard:
+    requests.cpu: {{ index .Values.resourceQuota.limits "requests.cpu" | quote }}
+    requests.memory: {{ index .Values.resourceQuota.limits "requests.memory" }}
+    limits.cpu: {{ index .Values.resourceQuota.limits "limits.cpu" | quote }}
+    limits.memory: {{ index .Values.resourceQuota.limits "limits.memory" }}
+{{- end }}
+---
+{{- if .Values.limitRange.enabled }}
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+  namespace: {{ .Values.namespace.name }}
+spec:
+  limits:
+  - default:
+      cpu: {{ .Values.limitRange.default.cpu }}
+      memory: {{ .Values.limitRange.default.memory }}
+    defaultRequest:
+      cpu: {{ .Values.limitRange.defaultRequest.cpu }}
+      memory: {{ .Values.limitRange.defaultRequest.memory }}
+    type: Container
+{{- end }}
+

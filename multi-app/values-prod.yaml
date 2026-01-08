@@ -1,0 +1,48 @@
+namespace:
+  name: nano-prod
+  create: true
+
+deployment:
+  name: mult-app
+  replicas: 3
+  image:
+    repository: mult-app
+    tag: latest
+    pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8080
+
+configmap:
+  enabled: true
+  data:
+    ENVIRONMENT: production
+    LOG_LEVEL: info
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "500m"
+  limits:
+    memory: "256Mi"
+    cpu: "1000m"
+
+resourceQuota:
+  enabled: true
+  limits:
+    requests.cpu: "4"
+    requests.memory: 1Gi
+    limits.cpu: "4"
+    limits.memory: 1Gi
+
+limitRange:
+  enabled: true
+  default:
+    cpu: 1000m
+    memory: 256Mi
+  defaultRequest:
+    cpu: 500m
+    memory: 128Mi
+
