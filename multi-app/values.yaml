@@ -31,10 +31,10 @@ resources:
 resourceQuota:
   enabled: true
   limits:
-    requests.cpu: "2"
-    requests.memory: 512Mi
-    limits.cpu: "2"
-    limits.memory: 512Mi
+    requests.cpu: "6"
+    requests.memory: 16Gi
+    limits.cpu: "6"
+    limits.memory: 16Gi
 
 limitRange:
   enabled: true
